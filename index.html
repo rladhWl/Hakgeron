@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>환경보건학개론 시험 암기앱</title>
+  <title>환경보건학개론 시험 암기앱 확장판</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -13,18 +13,12 @@
       color: #1f2937;
     }
     .container {
-      max-width: 1080px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 20px;
     }
-    h1 {
-      margin: 0 0 10px;
-      font-size: 30px;
-    }
-    .subtitle {
-      color: #6b7280;
-      margin-bottom: 20px;
-    }
+    h1 { margin: 0 0 10px; font-size: 30px; }
+    .subtitle { color: #6b7280; margin-bottom: 20px; line-height: 1.6; }
     .card {
       background: #fff;
       border-radius: 18px;
@@ -69,7 +63,7 @@
     .good { background: #16a34a; color: #fff; }
     .warn { background: #f59e0b; color: #fff; }
     .danger { background: #dc2626; color: #fff; }
-
+    .purple { background: #7c3aed; color: #fff; }
     .badges {
       display: flex;
       flex-wrap: wrap;
@@ -94,6 +88,7 @@
       color: #6b7280;
       font-size: 14px;
       margin-bottom: 10px;
+      line-height: 1.6;
     }
     .choices {
       display: grid;
@@ -144,33 +139,48 @@
       font-weight: 800;
       color: #2563eb;
     }
-    .small {
-      color: #6b7280;
-      font-size: 13px;
+    .small { color: #6b7280; font-size: 13px; }
+    .exam-box {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      line-height: 1.7;
+    }
+    .wrong-note {
+      margin-top: 12px;
+      padding: 14px;
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      border-radius: 12px;
+      white-space: pre-line;
+      line-height: 1.7;
+    }
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 18px;
+      font-weight: 800;
     }
     @media (max-width: 840px) {
-      .grid, .stats {
-        grid-template-columns: 1fr 1fr;
-      }
+      .grid, .stats { grid-template-columns: 1fr 1fr; }
       .question { font-size: 19px; }
     }
     @media (max-width: 520px) {
-      .grid, .stats {
-        grid-template-columns: 1fr;
-      }
-      .btns {
-        flex-direction: column;
-      }
-      button {
-        width: 100%;
-      }
+      .grid, .stats { grid-template-columns: 1fr; }
+      .btns { flex-direction: column; }
+      button { width: 100%; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>환경보건학개론 시험 암기앱</h1>
-    <div class="subtitle">객관식 20문제 + 서술형 5문제 대비용. 노출평가, 환경독성학, 용량-반응, 비동물시험법, 위해관리 중심.</div>
+    <h1>환경보건학개론 시험 암기앱 확장판</h1>
+    <div class="subtitle">
+      추가 기능: <strong>문제 수 확대</strong>, <strong>20문제 모의고사 모드</strong>, <strong>오답노트 자동 생성</strong><br>
+      GitHub Pages에 올릴 때는 파일명을 반드시 <strong>index.html</strong> 로 저장해.
+    </div>
 
     <div class="card">
       <div class="grid">
@@ -214,7 +224,18 @@
         <button class="secondary" id="showAnswerBtn">정답 보기</button>
         <button class="good" id="knownBtn">외웠음</button>
         <button class="warn" id="hardBtn">어려움</button>
+        <button class="purple" id="startExamBtn">20문제 모의고사 시작</button>
+        <button class="secondary" id="wrongNoteBtn">오답노트 보기</button>
         <button class="danger" id="resetBtn">기록 초기화</button>
+      </div>
+
+      <div class="exam-box" id="examBox">
+        <div><strong>모의고사 모드</strong></div>
+        <div id="examStatus">모의고사 준비 중...</div>
+        <div class="btns" style="margin-top:10px;">
+          <button class="primary" id="nextExamBtn">다음 문제</button>
+          <button class="secondary" id="finishExamBtn">모의고사 종료</button>
+        </div>
       </div>
     </div>
 
@@ -228,6 +249,7 @@
       <div class="question" id="questionBox">문제가 여기에 표시됩니다.</div>
       <div class="choices" id="choicesBox"></div>
       <div class="answer" id="answerBox"></div>
+      <div id="wrongNoteArea"></div>
     </div>
 
     <div class="stats">
@@ -257,323 +279,96 @@
   <script>
     const items = [
       // 노출평가
-      {
-        id: 1,
-        part: "노출평가",
-        question: "노출평가의 개념을 설명하시오.",
-        answer: "노출평가란 특정 유해인자가 인체에 도달하는 경로와 과정을 분석하여 실제 흡수량을 추정하는 과정이다. 대상 인구집단, 노출경로, 노출량, 노출시점, 노출기간 등을 고려한다."
-      },
-      {
-        id: 2,
-        part: "노출평가",
-        question: "노출평가의 중요성을 설명하시오.",
-        answer: "노출평가는 환경성질환의 원인 규명, 환경규제 및 기준 설정, 위해관리 정책 수립, 고위험군 자원배분, 새로운 환경문제 대응전략 마련에 중요하다."
-      },
-      {
-        id: 3,
-        part: "노출평가",
-        question: "노출평가에서 고려해야 할 요소를 쓰시오.",
-        answer: "누가, 무엇에, 어떻게, 얼마나, 언제, 얼마나 오래 노출되는지를 고려해야 한다."
-      },
-      {
-        id: 4,
-        part: "노출평가",
-        question: "노출평가의 간접적 방법과 직접적 방법을 비교하시오.",
-        answer: "간접적 방법은 환경농도 측정, 설문조사, 활동패턴, 수학적 모델링 등을 이용해 노출을 추정하는 방식이다. 직접적 방법은 생체모니터링이나 개인 노출측정으로 실제 노출을 계량하는 방법이다."
-      },
-      {
-        id: 5,
-        part: "노출평가",
-        question: "간접적 노출평가 방법의 예를 쓰시오.",
-        answer: "환경매체 농도 측정, 설문조사, 활동패턴 자료, 수학적 모델링 등이 있다."
-      },
-      {
-        id: 6,
-        part: "노출평가",
-        question: "직접적 노출평가 방법의 예를 쓰시오.",
-        answer: "생체모니터링과 개인 노출측정이 있다."
-      },
-      {
-        id: 7,
-        part: "노출평가",
-        question: "actual exposure와 potential exposure의 차이를 설명하시오.",
-        answer: "actual exposure는 실제 체내 또는 개인이 경험한 노출을 의미하고, potential exposure는 환경농도 등으로 추정한 잠재적 노출을 의미한다."
-      },
+      {id:1, part:"노출평가", question:"노출평가의 개념을 설명하시오.", answer:"노출평가란 특정 유해인자가 인체에 도달하는 경로와 과정을 분석하여 실제 흡수량을 추정하는 과정이다. 대상 인구집단, 노출경로, 노출량, 노출시점, 노출기간 등을 고려한다."},
+      {id:2, part:"노출평가", question:"노출평가의 중요성을 설명하시오.", answer:"노출평가는 환경성질환의 원인 규명, 환경규제 및 기준 설정, 위해관리 정책 수립, 고위험군 자원배분, 새로운 환경문제 대응전략 마련에 중요하다."},
+      {id:3, part:"노출평가", question:"노출평가에서 고려해야 할 요소를 쓰시오.", answer:"누가, 무엇에, 어떻게, 얼마나, 언제, 얼마나 오래 노출되는지를 고려해야 한다."},
+      {id:4, part:"노출평가", question:"노출평가의 간접적 방법과 직접적 방법을 비교하시오.", answer:"간접적 방법은 환경농도 측정, 설문조사, 활동패턴, 수학적 모델링 등을 이용해 노출을 추정하는 방식이다. 직접적 방법은 생체모니터링이나 개인 노출측정으로 실제 노출을 계량하는 방법이다."},
+      {id:5, part:"노출평가", question:"간접적 노출평가 방법의 예를 쓰시오.", answer:"환경매체 농도 측정, 설문조사, 활동패턴 자료, 수학적 모델링 등이 있다."},
+      {id:6, part:"노출평가", question:"직접적 노출평가 방법의 예를 쓰시오.", answer:"생체모니터링과 개인 노출측정이 있다."},
+      {id:7, part:"노출평가", question:"actual exposure와 potential exposure의 차이를 설명하시오.", answer:"actual exposure는 실제 체내 또는 개인이 경험한 노출을 의미하고, potential exposure는 환경농도 등으로 추정한 잠재적 노출을 의미한다."},
+      {id:8, part:"노출평가", question:"개인 노출측정의 의미를 설명하시오.", answer:"개인 노출측정은 개인이 실제 생활환경에서 경험하는 오염물질 노출수준을 직접 측정하는 방법이다."},
+      {id:9, part:"노출평가", question:"환경농도 측정만으로 실제 노출을 완전히 설명하기 어려운 이유를 쓰시오.", answer:"개인의 활동패턴, 노출경로 차이, 체내 흡수율 차이 등이 반영되지 않기 때문이다."},
+      {id:10, part:"노출평가", question:"노출평가가 위해성평가에서 중요한 이유를 설명하시오.", answer:"실제 사람이 얼마나 노출되는지 정량화해야 위해도결정이 가능하기 때문이다."},
 
       // 생체모니터링
-      {
-        id: 8,
-        part: "생체모니터링",
-        question: "생체모니터링의 개념을 설명하시오.",
-        answer: "생체모니터링은 혈액, 소변, 모발 등 생체시료를 분석하여 인체가 실제로 얼마나 유해물질에 노출되었는지 평가하는 방법이다."
-      },
-      {
-        id: 9,
-        part: "생체모니터링",
-        question: "생체모니터링의 장점을 설명하시오.",
-        answer: "생체모니터링은 실제 체내부하를 반영하며, 여러 노출경로를 통합적으로 평가할 수 있고, 환경농도만으로 파악하기 어려운 실제 노출수준을 확인할 수 있다."
-      },
-      {
-        id: 10,
-        part: "생체모니터링",
-        question: "혈액 시료의 특징을 설명하시오.",
-        answer: "혈액은 단기 및 장기 노출을 반영할 수 있지만 침습적이라는 단점이 있다."
-      },
-      {
-        id: 11,
-        part: "생체모니터링",
-        question: "소변 시료의 특징을 설명하시오.",
-        answer: "소변은 최근 1~3일 정도의 단기 노출을 잘 반영하며 비침습적이고 채취가 비교적 쉽다."
-      },
-      {
-        id: 12,
-        part: "생체모니터링",
-        question: "모발 또는 손톱 시료의 특징을 설명하시오.",
-        answer: "모발과 손톱은 장기간 누적노출을 평가하는 데 유리하다."
-      },
-      {
-        id: 13,
-        part: "생체모니터링",
-        question: "모유 시료의 특징을 설명하시오.",
-        answer: "모유는 어머니의 체내 축적물질과 영아로의 전이노출을 평가하는 데 활용된다."
-      },
-      {
-        id: 14,
-        part: "생체모니터링",
-        question: "KoNEHS를 설명하시오.",
-        answer: "KoNEHS는 국민환경보건기초조사로, 국립환경과학원이 주관하며 2009년 이후 3년 단위로 수행되는 우리나라 대표 환경보건 조사이다."
-      },
-      {
-        id: 15,
-        part: "생체모니터링",
-        question: "미국 NBP를 설명하시오.",
-        answer: "NBP는 미국 CDC가 NHANES를 기반으로 수행하는 생체모니터링 프로그램이다."
-      },
-      {
-        id: 16,
-        part: "생체모니터링",
-        question: "HBM4EU를 설명하시오.",
-        answer: "HBM4EU는 유럽의 생체모니터링 협력 프로젝트로, 국가 간 자료를 공유하고 환경유해물질 노출을 평가하기 위한 사업이다."
-      },
+      {id:11, part:"생체모니터링", question:"생체모니터링의 개념을 설명하시오.", answer:"생체모니터링은 혈액, 소변, 모발 등 생체시료를 분석하여 인체가 실제로 얼마나 유해물질에 노출되었는지 평가하는 방법이다."},
+      {id:12, part:"생체모니터링", question:"생체모니터링의 장점을 설명하시오.", answer:"생체모니터링은 실제 체내부하를 반영하며, 여러 노출경로를 통합적으로 평가할 수 있고, 환경농도만으로 파악하기 어려운 실제 노출수준을 확인할 수 있다."},
+      {id:13, part:"생체모니터링", question:"혈액 시료의 특징을 설명하시오.", answer:"혈액은 단기 및 장기 노출을 반영할 수 있지만 침습적이라는 단점이 있다."},
+      {id:14, part:"생체모니터링", question:"소변 시료의 특징을 설명하시오.", answer:"소변은 최근 1~3일 정도의 단기 노출을 잘 반영하며 비침습적이고 채취가 비교적 쉽다."},
+      {id:15, part:"생체모니터링", question:"모발 또는 손톱 시료의 특징을 설명하시오.", answer:"모발과 손톱은 장기간 누적노출을 평가하는 데 유리하다."},
+      {id:16, part:"생체모니터링", question:"모유 시료의 특징을 설명하시오.", answer:"모유는 어머니의 체내 축적물질과 영아로의 전이노출을 평가하는 데 활용된다."},
+      {id:17, part:"생체모니터링", question:"호기 시료의 활용 예를 설명하시오.", answer:"호기 시료는 휘발성유기화합물(VOCs) 노출평가에 유용하다."},
+      {id:18, part:"생체모니터링", question:"타액 시료의 활용 예를 설명하시오.", answer:"타액은 일부 금속류나 호르몬 관련 평가에 활용될 수 있다."},
+      {id:19, part:"생체모니터링", question:"금속 분석 시 시료 채취에서 주의할 점을 쓰시오.", answer:"금속 오염을 막기 위해 금속제 도구 사용을 피해야 한다."},
+      {id:20, part:"생체모니터링", question:"PFAS 또는 가소제 분석 시 적절한 용기 조건을 쓰시오.", answer:"PP 용기 등 분석대상 물질에 오염을 최소화하는 용기를 사용해야 한다."},
+      {id:21, part:"생체모니터링", question:"KoNEHS를 설명하시오.", answer:"KoNEHS는 국민환경보건기초조사로, 국립환경과학원이 주관하며 2009년 이후 3년 단위로 수행되는 우리나라 대표 환경보건 조사이다."},
+      {id:22, part:"생체모니터링", question:"미국 NBP를 설명하시오.", answer:"NBP는 미국 CDC가 NHANES를 기반으로 수행하는 생체모니터링 프로그램이다."},
+      {id:23, part:"생체모니터링", question:"HBM4EU를 설명하시오.", answer:"HBM4EU는 유럽의 생체모니터링 협력 프로젝트로, 국가 간 자료를 공유하고 환경유해물질 노출을 평가하기 위한 사업이다."},
+      {id:24, part:"생체모니터링", question:"동결-해동 반복을 피해야 하는 이유를 쓰시오.", answer:"시료 성분 변화나 분석오차가 발생할 수 있기 때문이다."},
 
       // 환경독성학
-      {
-        id: 17,
-        part: "환경독성학",
-        question: "환경독성학의 정의를 설명하시오.",
-        answer: "환경독성학은 환경에 존재하는 물리적, 화학적, 생물학적 유해요인이 인간 건강과 생태계 건전성에 미치는 부정적 영향을 연구하는 학문이다."
-      },
-      {
-        id: 18,
-        part: "환경독성학",
-        question: "환경독성학 발달의 역사적 배경을 설명하시오.",
-        answer: "산업혁명 이후 화학물질 사용과 환경오염이 증가하면서 인간 건강과 생태계 영향에 대한 연구 필요성이 커졌고, 환경독성학이 발달하였다."
-      },
-      {
-        id: 19,
-        part: "환경독성학",
-        question: "런던 스모그 사건의 의의를 설명하시오.",
-        answer: "1952년 런던 스모그 사건은 대기오염이 대규모 건강피해를 초래할 수 있음을 보여준 대표적 사건이다."
-      },
-      {
-        id: 20,
-        part: "환경독성학",
-        question: "미나마타병 사건의 의의를 설명하시오.",
-        answer: "미나마타병은 메틸수은 오염으로 인한 대표적 환경성 질환으로, 산업오염과 생체축적의 위험성을 보여준 사건이다."
-      },
-      {
-        id: 21,
-        part: "환경독성학",
-        question: "침묵의 봄의 의의를 설명하시오.",
-        answer: "레이첼 카슨의 침묵의 봄은 살충제 사용의 생태계 영향과 화학물질 규제의 필요성을 널리 알린 저서이다."
-      },
+      {id:25, part:"환경독성학", question:"환경독성학의 정의를 설명하시오.", answer:"환경독성학은 환경에 존재하는 물리적, 화학적, 생물학적 유해요인이 인간 건강과 생태계 건전성에 미치는 부정적 영향을 연구하는 학문이다."},
+      {id:26, part:"환경독성학", question:"환경독성학 발달의 역사적 배경을 설명하시오.", answer:"산업혁명 이후 화학물질 사용과 환경오염이 증가하면서 인간 건강과 생태계 영향에 대한 연구 필요성이 커졌고, 환경독성학이 발달하였다."},
+      {id:27, part:"환경독성학", question:"런던 스모그 사건의 의의를 설명하시오.", answer:"1952년 런던 스모그 사건은 대기오염이 대규모 건강피해를 초래할 수 있음을 보여준 대표적 사건이다."},
+      {id:28, part:"환경독성학", question:"미나마타병 사건의 의의를 설명하시오.", answer:"미나마타병은 메틸수은 오염으로 인한 대표적 환경성 질환으로, 산업오염과 생체축적의 위험성을 보여준 사건이다."},
+      {id:29, part:"환경독성학", question:"침묵의 봄의 의의를 설명하시오.", answer:"레이첼 카슨의 침묵의 봄은 살충제 사용의 생태계 영향과 화학물질 규제의 필요성을 널리 알린 저서이다."},
+      {id:30, part:"환경독성학", question:"산업혁명이 환경독성학 발달에 미친 영향을 설명하시오.", answer:"산업화로 인한 대기, 수질, 토양오염과 화학물질 노출 증가가 환경독성학의 필요성을 키웠다."},
 
       // 용량-반응
-      {
-        id: 22,
-        part: "용량-반응",
-        question: "용량-반응 관계를 설명하시오.",
-        answer: "용량-반응 관계란 독성물질의 노출량 또는 투여량과 생물학적 반응의 크기 사이의 관계를 의미한다."
-      },
-      {
-        id: 23,
-        part: "용량-반응",
-        question: "LD50을 설명하시오.",
-        answer: "LD50은 실험동물의 50%를 사망하게 하는 용량을 의미한다."
-      },
-      {
-        id: 24,
-        part: "용량-반응",
-        question: "LC50을 설명하시오.",
-        answer: "LC50은 실험동물의 50%를 사망하게 하는 농도를 의미한다."
-      },
-      {
-        id: 25,
-        part: "용량-반응",
-        question: "NOAEL과 LOAEL의 차이를 설명하시오.",
-        answer: "NOAEL은 유해영향이 관찰되지 않는 최대 용량이고, LOAEL은 유해영향이 관찰되는 최소 용량이다."
-      },
-      {
-        id: 26,
-        part: "용량-반응",
-        question: "NOAEC과 LOAEC의 차이를 설명하시오.",
-        answer: "NOAEC은 유해영향이 관찰되지 않는 최대 농도이고, LOAEC은 유해영향이 관찰되는 최소 농도이다."
-      },
-      {
-        id: 27,
-        part: "용량-반응",
-        question: "급성독성을 설명하시오.",
-        answer: "급성독성은 단기간, 보통 24시간 이내의 노출로 나타나는 독성이다."
-      },
-      {
-        id: 28,
-        part: "용량-반응",
-        question: "아급성독성을 설명하시오.",
-        answer: "아급성독성은 반복 노출이 대체로 28일 정도 지속될 때 평가하는 독성이다."
-      },
-      {
-        id: 29,
-        part: "용량-반응",
-        question: "아만성독성을 설명하시오.",
-        answer: "아만성독성은 약 90일 정도의 반복 노출에 의해 나타나는 독성이다."
-      },
-      {
-        id: 30,
-        part: "용량-반응",
-        question: "만성독성을 설명하시오.",
-        answer: "만성독성은 3개월 이상 장기간 반복 노출에 의해 나타나는 독성이다."
-      },
-      {
-        id: 31,
-        part: "용량-반응",
-        question: "RfD의 개념을 설명하시오.",
-        answer: "RfD는 사람이 평생 노출되어도 유해영향이 나타나지 않을 것으로 추정되는 1일 허용노출량이다."
-      },
-      {
-        id: 32,
-        part: "용량-반응",
-        question: "RfD 산출식을 쓰시오.",
-        answer: "RfD = PoD / (UF × MF)"
-      },
-      {
-        id: 33,
-        part: "용량-반응",
-        question: "HQ를 설명하시오.",
-        answer: "HQ는 노출량을 독성참고치로 나눈 값으로, 1보다 크면 잠재적 위해 가능성이 있다고 판단한다."
-      },
-      {
-        id: 34,
-        part: "용량-반응",
-        question: "PNEC를 설명하시오.",
-        answer: "PNEC는 생태계 생물에게 유해한 영향이 나타나지 않는다고 예측되는 농도이다."
-      },
-      {
-        id: 35,
-        part: "용량-반응",
-        question: "결정론적 방법과 확률론적 방법에 의한 PNEC 산정을 비교하시오.",
-        answer: "결정론적 방법은 가장 민감한 종의 독성값과 평가계수를 이용하며 불확실성이 높다. 확률론적 방법은 여러 종의 독성자료와 SSD를 활용하여 불확실성을 줄인다."
-      },
-      {
-        id: 36,
-        part: "용량-반응",
-        question: "발암위해도 허용 수준을 설명하시오.",
-        answer: "초과발암위해도의 허용 수준은 일반적으로 10^-6에서 10^-4 범위로 제시된다."
-      },
+      {id:31, part:"용량-반응", question:"용량-반응 관계를 설명하시오.", answer:"용량-반응 관계란 독성물질의 노출량 또는 투여량과 생물학적 반응의 크기 사이의 관계를 의미한다."},
+      {id:32, part:"용량-반응", question:"LD50을 설명하시오.", answer:"LD50은 실험동물의 50%를 사망하게 하는 용량을 의미한다."},
+      {id:33, part:"용량-반응", question:"LC50을 설명하시오.", answer:"LC50은 실험동물의 50%를 사망하게 하는 농도를 의미한다."},
+      {id:34, part:"용량-반응", question:"NOAEL과 LOAEL의 차이를 설명하시오.", answer:"NOAEL은 유해영향이 관찰되지 않는 최대 용량이고, LOAEL은 유해영향이 관찰되는 최소 용량이다."},
+      {id:35, part:"용량-반응", question:"NOAEC과 LOAEC의 차이를 설명하시오.", answer:"NOAEC은 유해영향이 관찰되지 않는 최대 농도이고, LOAEC은 유해영향이 관찰되는 최소 농도이다."},
+      {id:36, part:"용량-반응", question:"급성독성을 설명하시오.", answer:"급성독성은 단기간, 보통 24시간 이내의 노출로 나타나는 독성이다."},
+      {id:37, part:"용량-반응", question:"아급성독성을 설명하시오.", answer:"아급성독성은 반복 노출이 대체로 28일 정도 지속될 때 평가하는 독성이다."},
+      {id:38, part:"용량-반응", question:"아만성독성을 설명하시오.", answer:"아만성독성은 약 90일 정도의 반복 노출에 의해 나타나는 독성이다."},
+      {id:39, part:"용량-반응", question:"만성독성을 설명하시오.", answer:"만성독성은 3개월 이상 장기간 반복 노출에 의해 나타나는 독성이다."},
+      {id:40, part:"용량-반응", question:"RfD의 개념을 설명하시오.", answer:"RfD는 사람이 평생 노출되어도 유해영향이 나타나지 않을 것으로 추정되는 1일 허용노출량이다."},
+      {id:41, part:"용량-반응", question:"RfD 산출식을 쓰시오.", answer:"RfD = PoD / (UF × MF)"},
+      {id:42, part:"용량-반응", question:"HQ를 설명하시오.", answer:"HQ는 노출량을 독성참고치로 나눈 값으로, 1보다 크면 잠재적 위해 가능성이 있다고 판단한다."},
+      {id:43, part:"용량-반응", question:"PNEC를 설명하시오.", answer:"PNEC는 생태계 생물에게 유해한 영향이 나타나지 않는다고 예측되는 농도이다."},
+      {id:44, part:"용량-반응", question:"결정론적 방법과 확률론적 방법에 의한 PNEC 산정을 비교하시오.", answer:"결정론적 방법은 가장 민감한 종의 독성값과 평가계수를 이용하며 불확실성이 높다. 확률론적 방법은 여러 종의 독성자료와 SSD를 활용하여 불확실성을 줄인다."},
+      {id:45, part:"용량-반응", question:"발암위해도 허용 수준을 설명하시오.", answer:"초과발암위해도의 허용 수준은 일반적으로 10^-6에서 10^-4 범위로 제시된다."},
+      {id:46, part:"용량-반응", question:"PoD의 의미를 설명하시오.", answer:"PoD는 독성평가에서 기준점이 되는 출발용량 또는 출발농도를 의미한다."},
+      {id:47, part:"용량-반응", question:"UF의 의미를 설명하시오.", answer:"UF는 종간 차이, 개인차, 자료 부족 등을 보정하기 위한 불확실성 계수이다."},
+      {id:48, part:"용량-반응", question:"MF의 의미를 설명하시오.", answer:"MF는 추가적인 보정이 필요할 때 적용하는 수정계수이다."},
+      {id:49, part:"용량-반응", question:"RfD가 주로 사용되는 위해평가 분야를 쓰시오.", answer:"RfD는 주로 비발암성 위해평가에 사용된다."},
 
       // 독성시험법
-      {
-        id: 37,
-        part: "독성시험법",
-        question: "제브라피쉬를 이용한 환경독성시험의 장점을 설명하시오.",
-        answer: "제브라피쉬는 번식력이 좋고 수정란 확보가 쉽고 부화가 빠르며 인간과 유전자 유사성이 높고 독성에 민감하여 환경독성시험에 유용하다."
-      },
-      {
-        id: 38,
-        part: "독성시험법",
-        question: "제브라피쉬가 독성시험에 적합한 이유를 쓰시오.",
-        answer: "OECD 권장 어종이며, 관찰이 쉽고 발달이 빠르며 독성반응을 효율적으로 평가할 수 있기 때문이다."
-      },
+      {id:50, part:"독성시험법", question:"제브라피쉬를 이용한 환경독성시험의 장점을 설명하시오.", answer:"제브라피쉬는 번식력이 좋고 수정란 확보가 쉽고 부화가 빠르며 인간과 유전자 유사성이 높고 독성에 민감하여 환경독성시험에 유용하다."},
+      {id:51, part:"독성시험법", question:"제브라피쉬가 독성시험에 적합한 이유를 쓰시오.", answer:"OECD 권장 어종이며, 관찰이 쉽고 발달이 빠르며 독성반응을 효율적으로 평가할 수 있기 때문이다."},
+      {id:52, part:"독성시험법", question:"제브라피쉬의 인간 관련성을 설명하시오.", answer:"제브라피쉬는 인간과 유전자 유사성이 높아 독성기전 연구에 유용하다."},
 
       // 비동물시험법
-      {
-        id: 39,
-        part: "비동물시험법",
-        question: "QSAR를 설명하시오.",
-        answer: "QSAR는 화학물질의 분자구조와 독성 또는 활성의 관계를 수학적으로 분석하여 독성을 예측하는 비동물시험법이다."
-      },
-      {
-        id: 40,
-        part: "비동물시험법",
-        question: "QSAR의 장점을 설명하시오.",
-        answer: "QSAR는 신속하고 경제적이며 동물실험을 줄일 수 있고 신규 화학물질의 사전평가에 유용하다."
-      },
-      {
-        id: 41,
-        part: "비동물시험법",
-        question: "QSAR의 기본 가정을 설명하시오.",
-        answer: "분자구조가 유사한 물질은 유사한 생물학적 활성이나 독성을 보일 것이라는 가정에 기초한다."
-      },
+      {id:53, part:"비동물시험법", question:"QSAR를 설명하시오.", answer:"QSAR는 화학물질의 분자구조와 독성 또는 활성의 관계를 수학적으로 분석하여 독성을 예측하는 비동물시험법이다."},
+      {id:54, part:"비동물시험법", question:"QSAR의 장점을 설명하시오.", answer:"QSAR는 신속하고 경제적이며 동물실험을 줄일 수 있고 신규 화학물질의 사전평가에 유용하다."},
+      {id:55, part:"비동물시험법", question:"QSAR의 기본 가정을 설명하시오.", answer:"분자구조가 유사한 물질은 유사한 생물학적 활성이나 독성을 보일 것이라는 가정에 기초한다."},
+      {id:56, part:"비동물시험법", question:"QSAR가 유용한 이유를 설명하시오.", answer:"실험 이전에 화학물질의 잠재적 독성을 빠르게 예측할 수 있기 때문이다."},
 
       // 위해관리
-      {
-        id: 42,
-        part: "위해관리",
-        question: "유해성과 위해성의 차이를 설명하시오.",
-        answer: "유해성은 물질 자체가 가진 해로운 잠재력이고, 위해성은 그 물질에 실제 노출될 때 피해가 발생할 가능성과 정도를 의미한다."
-      },
-      {
-        id: 43,
-        part: "위해관리",
-        question: "위해관리 체계를 설명하시오.",
-        answer: "위해관리 체계는 위해성평가, 위해관리 조치, 위해모니터링으로 구성된다."
-      },
-      {
-        id: 44,
-        part: "위해관리",
-        question: "위해성평가의 4단계를 설명하시오.",
-        answer: "유해성확인, 용량-반응평가, 노출평가, 위해도결정의 4단계로 구성된다."
-      },
-      {
-        id: 45,
-        part: "위해관리",
-        question: "유해성확인을 설명하시오.",
-        answer: "유해성확인은 특정 물질이 어떤 건강영향이나 독성을 유발하는지 파악하는 단계이다."
-      },
-      {
-        id: 46,
-        part: "위해관리",
-        question: "위해도결정을 설명하시오.",
-        answer: "위해도결정은 유해성, 용량-반응, 노출평가 결과를 종합하여 최종 위해 수준을 판단하는 단계이다."
-      },
-      {
-        id: 47,
-        part: "위해관리",
-        question: "위해관리 조치의 예를 쓰시오.",
-        answer: "허가물질 지정, 금지물질 지정, 제한물질 지정 등의 조치가 있다."
-      },
-      {
-        id: 48,
-        part: "위해관리",
-        question: "MSDS를 설명하시오.",
-        answer: "MSDS는 물질안전보건자료로, 물질명, 성분, 유해성·위험성, 취급주의, 보호구, 응급조치, 보관방법 등의 정보를 제공한다."
-      },
-      {
-        id: 49,
-        part: "위해관리",
-        question: "위해소통을 설명하시오.",
-        answer: "위해소통은 위해성과 관련된 정보를 전문가, 정부, 사업자, 시민이 상호 교환하고 소통하는 과정이다."
-      },
-      {
-        id: 50,
-        part: "위해관리",
-        question: "위해소통에 영향을 미치는 요인을 쓰시오.",
-        answer: "자발성, 통제가능성, 친숙도, 공포감, 신뢰 등이 영향을 미친다."
-      }
+      {id:57, part:"위해관리", question:"유해성과 위해성의 차이를 설명하시오.", answer:"유해성은 물질 자체가 가진 해로운 잠재력이고, 위해성은 그 물질에 실제 노출될 때 피해가 발생할 가능성과 정도를 의미한다."},
+      {id:58, part:"위해관리", question:"위해관리 체계를 설명하시오.", answer:"위해관리 체계는 위해성평가, 위해관리 조치, 위해모니터링으로 구성된다."},
+      {id:59, part:"위해관리", question:"위해성평가의 4단계를 설명하시오.", answer:"유해성확인, 용량-반응평가, 노출평가, 위해도결정의 4단계로 구성된다."},
+      {id:60, part:"위해관리", question:"유해성확인을 설명하시오.", answer:"유해성확인은 특정 물질이 어떤 건강영향이나 독성을 유발하는지 파악하는 단계이다."},
+      {id:61, part:"위해관리", question:"위해도결정을 설명하시오.", answer:"위해도결정은 유해성, 용량-반응, 노출평가 결과를 종합하여 최종 위해 수준을 판단하는 단계이다."},
+      {id:62, part:"위해관리", question:"위해관리 조치의 예를 쓰시오.", answer:"허가물질 지정, 금지물질 지정, 제한물질 지정 등의 조치가 있다."},
+      {id:63, part:"위해관리", question:"MSDS를 설명하시오.", answer:"MSDS는 물질안전보건자료로, 물질명, 성분, 유해성·위험성, 취급주의, 보호구, 응급조치, 보관방법 등의 정보를 제공한다."},
+      {id:64, part:"위해관리", question:"위해소통을 설명하시오.", answer:"위해소통은 위해성과 관련된 정보를 전문가, 정부, 사업자, 시민이 상호 교환하고 소통하는 과정이다."},
+      {id:65, part:"위해관리", question:"위해소통에 영향을 미치는 요인을 쓰시오.", answer:"자발성, 통제가능성, 친숙도, 공포감, 신뢰 등이 영향을 미친다."},
+      {id:66, part:"위해관리", question:"유해성과 노출의 관계로 위해성을 설명하시오.", answer:"아무리 유해성이 큰 물질이라도 노출이 없다면 위해성은 낮아질 수 있다."},
+      {id:67, part:"위해관리", question:"왜 위해소통이 중요한지 설명하시오.", answer:"정확한 정보 전달과 사회적 신뢰 형성을 통해 위험 인식 차이를 줄이고 적절한 대응을 돕기 때문이다."}
     ];
 
     let current = null;
     let pool = [];
-    let stats = JSON.parse(localStorage.getItem("eh_intro_stats") || "{}");
+    let examMode = false;
+    let examQuestions = [];
+    let examIndex = 0;
+    let examScore = 0;
+    let examAnswered = false;
+    let stats = JSON.parse(localStorage.getItem("eh_intro_stats_v2") || "{}");
+    let wrongNotes = JSON.parse(localStorage.getItem("eh_intro_wrong_notes") || "[]");
 
     function initStats() {
       items.forEach(item => {
@@ -591,7 +386,8 @@
     }
 
     function saveStats() {
-      localStorage.setItem("eh_intro_stats", JSON.stringify(stats));
+      localStorage.setItem("eh_intro_stats_v2", JSON.stringify(stats));
+      localStorage.setItem("eh_intro_wrong_notes", JSON.stringify(wrongNotes));
     }
 
     function shuffle(arr) {
@@ -623,7 +419,6 @@
         if (part !== "all" && item.part !== part) return false;
         if (filter === "hard" && !stats[item.id].hard) return false;
         if (filter === "unseen" && stats[item.id].seen) return false;
-
         if (search) {
           const text = (item.question + " " + item.answer + " " + item.part).toLowerCase();
           if (!text.includes(search)) return false;
@@ -648,24 +443,25 @@
       document.getElementById("accStat").textContent = acc + "%";
     }
 
+    function clearDisplay() {
+      document.getElementById("choicesBox").innerHTML = "";
+      document.getElementById("answerBox").style.display = "none";
+      document.getElementById("answerBox").textContent = "";
+      document.getElementById("wrongNoteArea").innerHTML = "";
+    }
+
     function render() {
+      if (examMode) return;
       const mode = document.getElementById("mode").value;
       pool = getFiltered();
-
-      const qBox = document.getElementById("questionBox");
-      const aBox = document.getElementById("answerBox");
-      const cBox = document.getElementById("choicesBox");
-
-      aBox.style.display = "none";
-      aBox.textContent = "";
-      cBox.innerHTML = "";
+      clearDisplay();
 
       document.getElementById("badgeMode").textContent = getModeLabel(mode);
       document.getElementById("badgeCount").textContent = `현재 조건 ${pool.length}문제`;
 
       if (pool.length === 0) {
         current = null;
-        qBox.textContent = "조건에 맞는 문제가 없습니다.";
+        document.getElementById("questionBox").textContent = "조건에 맞는 문제가 없습니다.";
         document.getElementById("badgePart").textContent = "없음";
         document.getElementById("metaText").textContent = "필터나 검색 조건을 바꿔보세요.";
         updateStats();
@@ -678,16 +474,31 @@
 
       document.getElementById("badgePart").textContent = current.part;
       document.getElementById("metaText").textContent = `파트: ${current.part}`;
-      qBox.textContent = current.question;
-      aBox.textContent = current.answer;
+      document.getElementById("questionBox").textContent = current.question;
+      document.getElementById("answerBox").textContent = current.answer;
 
-      if (mode === "mcq") renderMCQ(current);
-      if (mode === "ox") renderOX(current);
+      if (mode === "mcq") renderMCQ(current, false);
+      else if (mode === "ox") renderOX(current, false);
 
       updateStats();
     }
 
-    function renderMCQ(item) {
+    function addWrongNote(item, userChoice, correctAnswer, modeLabel) {
+      const note = {
+        time: new Date().toLocaleString(),
+        part: item.part,
+        mode: modeLabel,
+        question: item.question,
+        userChoice: userChoice,
+        correctAnswer: correctAnswer,
+        answer: item.answer
+      };
+      wrongNotes.unshift(note);
+      if (wrongNotes.length > 100) wrongNotes = wrongNotes.slice(0, 100);
+      saveStats();
+    }
+
+    function renderMCQ(item, isExam) {
       const cBox = document.getElementById("choicesBox");
       let wrongPool = items.filter(x => x.id !== item.id && x.part === item.part).map(x => x.answer);
       if (wrongPool.length < 3) {
@@ -705,9 +516,12 @@
           all.forEach(b => b.disabled = true);
 
           const raw = btn.textContent.replace(/^\d+\.\s*/, "");
-          if (raw === item.answer) {
+          const correct = raw === item.answer;
+
+          if (correct) {
             btn.classList.add("correct");
             stats[item.id].correct += 1;
+            if (isExam) examScore++;
           } else {
             btn.classList.add("wrong");
             all.forEach(b => {
@@ -715,16 +529,23 @@
               if (txt === item.answer) b.classList.add("correct");
             });
             stats[item.id].wrong += 1;
+            addWrongNote(item, raw, item.answer, isExam ? "모의고사 객관식" : "객관식");
           }
           saveStats();
           document.getElementById("answerBox").style.display = "block";
+          document.getElementById("answerBox").textContent = item.answer;
           updateStats();
+
+          if (isExam) {
+            examAnswered = true;
+            updateExamStatus();
+          }
         };
         cBox.appendChild(btn);
       });
     }
 
-    function renderOX(item) {
+    function renderOX(item, isExam) {
       const cBox = document.getElementById("choicesBox");
       const isTrue = Math.random() < 0.5;
       let statement = item.answer;
@@ -755,15 +576,23 @@
           if (correct) {
             btn.classList.add("correct");
             stats[item.id].correct += 1;
+            if (isExam) examScore++;
           } else {
             btn.classList.add("wrong");
             stats[item.id].wrong += 1;
+            addWrongNote(item, mark, isTrue ? "O" : "X", isExam ? "모의고사 OX" : "OX");
           }
           saveStats();
+
           const aBox = document.getElementById("answerBox");
           aBox.style.display = "block";
           aBox.textContent = `정답: ${isTrue ? "O" : "X"}\n\n원래 기준 답안:\n${item.answer}`;
           updateStats();
+
+          if (isExam) {
+            examAnswered = true;
+            updateExamStatus();
+          }
         };
         cBox.appendChild(btn);
       });
@@ -793,11 +622,101 @@
       alert("어려운 문제로 표시했어.");
     }
 
+    function renderWrongNotes() {
+      const area = document.getElementById("wrongNoteArea");
+      if (wrongNotes.length === 0) {
+        area.innerHTML = `<div class="wrong-note"><strong>오답노트</strong>\n아직 기록된 오답이 없어.</div>`;
+        return;
+      }
+
+      let html = `<div class="wrong-note"><div class="section-title">오답노트</div>`;
+      wrongNotes.slice(0, 20).forEach((n, i) => {
+        html += `${i + 1}. [${n.part}] ${n.question}
+- 내가 고른 답: ${n.userChoice}
+- 정답: ${n.correctAnswer}
+- 기준 답안: ${n.answer}
+- 기록 시각: ${n.time}
+
+`;
+      });
+      html += `</div>`;
+      area.innerHTML = html;
+    }
+
     function resetAll() {
-      if (!confirm("학습 기록을 모두 초기화할까요?")) return;
+      if (!confirm("학습 기록과 오답노트를 모두 초기화할까요?")) return;
       stats = {};
+      wrongNotes = [];
+      examMode = false;
+      document.getElementById("examBox").style.display = "none";
       initStats();
       render();
+      updateStats();
+    }
+
+    function startExam() {
+      examMode = true;
+      examIndex = 0;
+      examScore = 0;
+      examAnswered = false;
+
+      const allPool = items.filter(x => x.answer && x.answer.length > 0);
+      examQuestions = shuffle(allPool).slice(0, 20);
+
+      document.getElementById("examBox").style.display = "block";
+      document.getElementById("mode").value = "mcq";
+      renderExamQuestion();
+    }
+
+    function updateExamStatus() {
+      document.getElementById("examStatus").textContent =
+        `문항 ${examIndex + 1} / ${examQuestions.length} | 현재 점수 ${examScore}점 | ${examAnswered ? "답안 선택 완료" : "답안 선택 전"}`;
+    }
+
+    function renderExamQuestion() {
+      clearDisplay();
+      if (examIndex >= examQuestions.length) {
+        finishExam();
+        return;
+      }
+
+      current = examQuestions[examIndex];
+      stats[current.id].seen = true;
+      saveStats();
+
+      document.getElementById("badgePart").textContent = current.part;
+      document.getElementById("badgeMode").textContent = "20문제 모의고사";
+      document.getElementById("badgeCount").textContent = `모의고사 ${examIndex + 1}/${examQuestions.length}`;
+      document.getElementById("metaText").textContent = `모의고사 진행 중`;
+      document.getElementById("questionBox").textContent = current.question;
+      document.getElementById("answerBox").textContent = current.answer;
+
+      examAnswered = false;
+      renderMCQ(current, true);
+      updateExamStatus();
+      updateStats();
+    }
+
+    function nextExamQuestion() {
+      if (!examMode) return;
+      if (!examAnswered) {
+        alert("먼저 답을 선택해줘.");
+        return;
+      }
+      examIndex++;
+      renderExamQuestion();
+    }
+
+    function finishExam() {
+      if (!examMode) return;
+      clearDisplay();
+      document.getElementById("questionBox").textContent = `모의고사 종료! 총점: ${examScore} / ${examQuestions.length}`;
+      document.getElementById("metaText").textContent = "오답노트 보기를 누르면 틀린 문제를 바로 복습할 수 있어.";
+      document.getElementById("badgePart").textContent = "모의고사 종료";
+      document.getElementById("badgeMode").textContent = "결과";
+      document.getElementById("badgeCount").textContent = `점수 ${examScore}/${examQuestions.length}`;
+      document.getElementById("examBox").style.display = "none";
+      examMode = false;
       updateStats();
     }
 
@@ -805,12 +724,16 @@
     document.getElementById("showAnswerBtn").addEventListener("click", showAnswer);
     document.getElementById("knownBtn").addEventListener("click", markKnown);
     document.getElementById("hardBtn").addEventListener("click", markHard);
+    document.getElementById("wrongNoteBtn").addEventListener("click", renderWrongNotes);
     document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("startExamBtn").addEventListener("click", startExam);
+    document.getElementById("nextExamBtn").addEventListener("click", nextExamQuestion);
+    document.getElementById("finishExamBtn").addEventListener("click", finishExam);
 
-    document.getElementById("mode").addEventListener("change", render);
-    document.getElementById("part").addEventListener("change", render);
-    document.getElementById("filter").addEventListener("change", render);
-    document.getElementById("search").addEventListener("input", render);
+    document.getElementById("mode").addEventListener("change", () => { if (!examMode) render(); });
+    document.getElementById("part").addEventListener("change", () => { if (!examMode) render(); });
+    document.getElementById("filter").addEventListener("change", () => { if (!examMode) render(); });
+    document.getElementById("search").addEventListener("input", () => { if (!examMode) render(); });
 
     initStats();
     updateStats();
